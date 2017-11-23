@@ -19,7 +19,7 @@ char* getln(void);
  *  \brief Checks if console input is the exit command
  *
  *  The function will return true if the string is identical to the C string
- *  "exit\n", false otherwise.
+ *  "exit", false otherwise.
  *
  *  \param str C string to check
  *  \return bool

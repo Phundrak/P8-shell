@@ -8,6 +8,8 @@ char *getln(void) {
   size_t lenmax, len;
   int c;
 
+  printf("$ ");
+
   line = (char *)malloc(1024 * sizeof(char));
   linep = line;
   lenmax = 1024;
@@ -18,7 +20,7 @@ char *getln(void) {
 
   for (;;) {
     c = fgetc(stdin);
-    if (c == EOF)
+    if (c == EOF || c == '\n')
       break;
 
     if (--len == 0) {
@@ -42,7 +44,7 @@ char *getln(void) {
 
 bool is_exit(char *str) {
   int i;
-  char *exit = "exit\n";
+  char *exit = "exit";
   for (i = 0; i < 5 && str[i]; ++i)
     if (str[i] != exit[i])
       return false;
@@ -52,7 +54,7 @@ bool is_exit(char *str) {
 char** str_to_array(char* str, const char *sep){
   char **res = NULL;
   char *p = strtok(str, sep);
-  int n_spaces = 0, i;
+  int n_spaces = 0;
 
   /* split string and apend tokens to `res` */
 
