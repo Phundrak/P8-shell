@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#define DEB if (1)
+
 void print_debug(char *str) {
   char* strdeb = str;
   while(*strdeb){
@@ -20,14 +22,16 @@ int main(void) {
   while(!is_exit(ln)) {
     printf("$ ");
     ln = getln();
-    print_debug(ln);
+    DEB {
+      print_debug(ln);
+    }
 
-    char ** res = str_to_array(ln, " ");
-    for(i = 0; res[i]; ++i)
-      printf("res[%d] = %s\n", i, res[i]);
-
+    char **res = str_to_array(ln, " ");
+    DEB {
+      for (i = 0; res[i]; ++i)
+        printf("res[%d] = %s\n", i, res[i]);
+    }
   }
-
 
   return 0;
 }

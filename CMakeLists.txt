@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 set(CMAKE_BUILD_TYPE Debug)
 
-project("LC-P8-sh")
+project("P8-shell")
 
-set(TGT "LC-P8-sh")
+set(TGT "P8-shell")
 set(${TGT}_VERSION_MAJOR 0)
 set(${TGT}_VERSION_MINOR 1)
 

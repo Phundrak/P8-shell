@@ -1,0 +1,3 @@
+This shell is a small university project for my second year in Computer Science. It is not intended to be a full-featured shell, just one that provides the most basic, and less, such as executing an executable (with a relative or absolute path) with arguments, and optionally be able to deal with pipes.
+
+This source code is under the GPLv3 licence.
