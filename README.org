@@ -1,4 +1,4 @@
-file:https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg]]
+[[file:https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg]]
 
 This shell is a small university project for my second year in Computer Science. It is not intended to be a full-featured shell, just one that provides the most basic, and less, such as executing an executable (with a relative or absolute path) with arguments, and optionally be able to deal with pipes.
 
