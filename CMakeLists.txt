@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+set(CMAKE_LEGACY_CYGWIN_WIN32 0)
+set(CMAKE_BUILD_TYPE Debug)
+
+project("LC-P8-sh")
+
+set(TGT "LC-P8-sh")
+set(${TGT}_VERSION_MAJOR 0)
+set(${TGT}_VERSION_MINOR 1)
+
+set(CC_COVERAGE_COMPILE_FLAGS "-pedantic -Wall -Wextra -Wold-style-cast -Woverloaded-virtual -Wfloat-equal -Wwrite-strings -Wpointer-arith -Wcast-qual -Wcast-align -Wconversion -Wshadow -Wredundant-decls -Wdouble-promotion -Winit-self -Wswitch-default -Wswitch-enum -Wundef -Winline")
+set(CMAKE_CC_FLAGS_DEBUG "${CC_COVERAGE_COMPILE_FLAGS} -g -pg")
+set(CMAKE_CC_FLAGS_RELEASE "${CC_COVERAGE_COMPILE_FLAGS} -O3")
+
+set(CMAKE_CC_STANDARD 11)
+set(CMAKE_CC_STANDARD_REQUIRED YES)
+set(CMAKE_CC_EXTENSIONS OFF)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "../debug/")
+
+set(CMAKE_CC_FLAGS "${CMAKE_CC_FLAGS} ${CC_COVERAGE_COMPILE_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CC_COVERAGE_COMPILE_FLAGS}")
+
+include_directories(include)
+file(GLOB SOURCES "src/*")
+add_executable(${TGT} ${SOURCES})
