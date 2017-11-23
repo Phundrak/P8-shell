@@ -16,8 +16,9 @@ extern char **environ;
  */
 
 /* TODO:
-   - Display return code if there was an error
    - Implement pipes
+   - Implement keyboard shortcuts such as C-c to stop current process, but not
+     the console itself
 */
 
 void print_debug(char *str) {
@@ -46,7 +47,7 @@ int main(void) {
 
     pid_t pid = fork();
 
-    if(pid > 0) { /* host process */
+    if (pid > 0) { /* host process */
       int return_code;
       /* waiting the child process to execute */
       waitpid(pid, &return_code, WUNTRACED);
@@ -56,14 +57,14 @@ int main(void) {
             "Father process: Child process executed, waitpid(%d) returned %d\n",
             pid, return_code);
       }
-    } else if(pid == 0) { /* hosted process */
+
+    } else if (pid == 0) { /* hosted process */
       execvp(arg[0], arg);
       perror("Could not execute execvp()");
     } else { /* fork failed */
       fprintf(stderr, "Error, fork() failed, exiting...");
       exit(1);
     }
-
 
     ln = getln();
     /* execvp(arg[0], arg); */

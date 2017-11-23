@@ -13,7 +13,7 @@
  *  \param void
  *  \return char*
  */
-char* getln(void);
+char *getln(void);
 
 /**
  *  \brief Checks if console input is the exit command
@@ -37,6 +37,6 @@ bool is_exit(char *str);
  *  \param sep Separator
  *  \return char**
  */
-char** str_to_array(char* str, const char *sep);
+char **str_to_array(char *str, const char *sep);
 
 #endif /* P8CONSOLE_SRC_UTILS_H_ */

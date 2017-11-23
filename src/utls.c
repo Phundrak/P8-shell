@@ -51,7 +51,7 @@ bool is_exit(char *str) {
   return true;
 }
 
-char** str_to_array(char* str, const char *sep){
+char **str_to_array(char *str, const char *sep) {
   char **res = NULL;
   char *p = strtok(str, sep);
   int n_spaces = 0;
