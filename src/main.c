@@ -11,6 +11,15 @@
 
 extern char **environ;
 
+/* FIXME:
+   - Cannot use relative paths
+ */
+
+/* TODO:
+   - Display return code if there was an error
+   - Implement pipes
+*/
+
 void print_debug(char *str) {
   char *strdeb = str;
   while (*strdeb) {
