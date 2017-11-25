@@ -28,11 +28,11 @@
  *  turns them on, whilst the value 0 turns them off. With a decent compiler, the
  *  debug features should not even compile if the value of DEB is set to 0. The
  *  value is automatically set by the processor from the CMake values.
- *  If you wish to have a debug compilation, use the command
- *  `cmake -DCMAKE_BUILD_TYPE=Debug ..`
+ *  If you wish to have a debug compilation, use the command\n
+ *  `cmake -DCMAKE_BUILD_TYPE=Debug ..`\n
  *  in the `build` directory. This will compile the P8-Shell in the `debug`
- *  directory. Otherwise, use the
- *  `cmake -DCMAKE_BUILD_TYPE=Release`
+ *  directory. Otherwise, use the\n
+ *  `cmake -DCMAKE_BUILD_TYPE=Release`\n
  *  command in the `build` directory. This will compile the P8-Shell in the `bin`
  *  directory.
  */
