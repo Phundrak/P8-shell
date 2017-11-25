@@ -1,7 +1,22 @@
+/**
+ *   \file utls.c
+ *   \brief Definition of the utility functions
+ *
+ *  Body file of \ref utls.h where the utility functions are implemented.
+ *
+ */
+
 #include "utls.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+/*****************************************************************************/
+/*                        string manipulation function                       */
+/*****************************************************************************/
+
+/* getln *********************************************************************/
 
 char *getln(void) {
   char *line, *linep;
@@ -42,14 +57,7 @@ char *getln(void) {
   return linep;
 }
 
-bool is_exit(char *str) {
-  int i;
-  char *exit = "exit";
-  for (i = 0; i < 5 && str[i]; ++i)
-    if (str[i] != exit[i])
-      return false;
-  return true;
-}
+/* str_to_array **************************************************************/
 
 char **str_to_array(char *str, const char *sep) {
   char **res = NULL;
@@ -74,4 +82,52 @@ char **str_to_array(char *str, const char *sep) {
   res = realloc(res, sizeof(char *) * (n_spaces + 1));
   res[n_spaces] = NULL;
   return res;
+}
+
+/*****************************************************************************/
+/*                         string analysis functions                         */
+/*****************************************************************************/
+
+/* is_exit *******************************************************************/
+
+bool is_exit(char *str) {
+  int i;
+  char *exit = "exit";
+  for (i = 0; i < 5 && str[i]; ++i)
+    if (str[i] != exit[i])
+      return false;
+  return true;
+}
+
+/* is_cd *********************************************************************/
+
+bool is_cd(char* str) {
+  int i;
+  char *cd = "cd";
+  for(i = 0; i < 3 && str[i]; ++i)
+    if(str[i] != cd[i])
+      return false;
+  return true;
+}
+
+/*****************************************************************************/
+/*                             build-in functions                            */
+/*****************************************************************************/
+
+int cd(char* str) {
+  return chdir(str);
+}
+
+/*****************************************************************************/
+/*                              debug functions                              */
+/*****************************************************************************/
+
+/* print_debug ***************************************************************/
+
+void print_debug(char *str) {
+  char *strdeb = str;
+  while (*strdeb) {
+    printf("%c\t%02x\t%04d\n", *strdeb, *strdeb, *strdeb);
+    strdeb++;
+  }
 }
