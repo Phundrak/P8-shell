@@ -84,6 +84,37 @@ char **str_to_array(char *str, const char *sep) {
   return res;
 }
 
+/* home_eval *****************************************************************/
+
+char* home_eval(char *str) {
+  char *res, *restemp;
+  int i;
+
+  /* If the string is not "~" nor does it begin with "~/", then do nothing */
+  if (str[0] != '~' && !(str[1] == '/' || str[1] == '\0'))
+    return str;
+
+  char *home = getenv("HOME");
+
+  DEB { printf("home: %s\n", home); }
+
+  /* -1 to each, '~' removed in str, as well as the last null char in home */
+  res = (char *)malloc(strlen(home - 1) + strlen(str - 1));
+  restemp = res;
+
+  for(i = 0; home[i]; ++i, ++restemp)
+    *restemp = home[i];
+  for(i = 1; str[i]; ++i, ++restemp)
+    *restemp = str[i];
+  /* final null char */
+  *restemp = 0;
+  printf("res: %s\n", res);
+
+  restemp = NULL;
+
+  return res;
+}
+
 /*****************************************************************************/
 /*                         string analysis functions                         */
 /*****************************************************************************/

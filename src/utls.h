@@ -13,6 +13,25 @@
 
 #include <stdbool.h>
 
+/**
+ *  \ref DEB acts as a switch to turn on and off debug features. The value 1
+ *  turns them on, whilst the value 0 turns them off. With a decent compiler, the
+ *  debug features should not even compile if the value of DEB is set to 0. The
+ *  value is automatically set by the processor from the CMake values.
+ *  If you wish to have a debug compilation, use the command\n
+ *  `cmake -DCMAKE_BUILD_TYPE=Debug ..`\n
+ *  in the `build` directory. This will compile the P8-Shell in the `debug`
+ *  directory. Otherwise, use the\n
+ *  `cmake -DCMAKE_BUILD_TYPE=Release ..`\n
+ *  command in the `build` directory. This will compile the P8-Shell in the `bin`
+ *  directory.
+ */
+#ifdef Debug
+#define DEB if (1)
+#else
+#define DEB if (0)
+#endif
+
 /*****************************************************************************/
 /*                        string manipulation function                       */
 /*****************************************************************************/
@@ -67,6 +86,21 @@ bool is_exit(char *str);
  *  \return bool
  */
 bool is_cd(char *str);
+
+/**
+ *  \brief Evaluates the tilde in a path as the value of $HOME
+ *
+ *  Evaluates the tilde in the path passed as argument. The string passed as
+ *  argument will be modified in order replace the tilde to the value held in the
+ *  environment's variable $HOME. This will work only if the tilde is at the
+ *  beginning of the string and is immediately followed by a slash or by the null
+ *  character, i.e. this function won't do anything on strings such as "~me",
+ *  "temp~/" or "file.c~"
+ *
+ *  \param str String in which the tilde has to be evaluated
+ *  \return void
+ */
+char* home_eval(char *str);
 
 /*****************************************************************************/
 /*                             built-in functions                            */

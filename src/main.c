@@ -32,7 +32,7 @@
  *  `cmake -DCMAKE_BUILD_TYPE=Debug ..`\n
  *  in the `build` directory. This will compile the P8-Shell in the `debug`
  *  directory. Otherwise, use the\n
- *  `cmake -DCMAKE_BUILD_TYPE=Release`\n
+ *  `cmake -DCMAKE_BUILD_TYPE=Release ..`\n
  *  command in the `build` directory. This will compile the P8-Shell in the `bin`
  *  directory.
  */
@@ -49,14 +49,13 @@
 /* FIXME:
    - Cannot handle whitespaces in arguments yet (such as escaped whitespaces or
      strings between quotation marks)
-   - Change tilde (`~`) in paths with home directory from environment "HOME"
-     variable
 */
 
 /* TODO:
    - Implement pipes
    - Implement keyboard shortcuts such as C-c to stop current process, but not
      the console itself
+   - Evaluation of arguments beginnig with a dollar sign such as $HOME
 */
 
 /*****************************************************************************/
@@ -64,6 +63,17 @@
 /*****************************************************************************/
 
 extern char **environ; /*!< External variable to the POSIX environment */
+
+/**
+ *  \brief Displays current directory, used for debug purposes
+ *  \return void
+ */
+void d_print_dir() {
+  char directory[1024];
+
+  getcwd(directory, sizeof(directory));
+  printf("In directory %s\n", getenv("HOME"));
+}
 
 /*****************************************************************************/
 /*                               MAIN FUNCTION                               */
@@ -99,26 +109,34 @@ int main(void) {
      * able to detect is as part of the path, even if escaped or if the path is
      * quoted.
      */
+
+    /* cd ********************************************************************/
+
     if (is_cd(arg[0])) {
 
-      char directory[1024];
-
-      getcwd(directory, sizeof(directory));
-      printf("In directory %s\n", directory);
-
       DEB {
-        getcwd(directory, sizeof(directory));
-        printf("In directory %s\n", directory);
+        d_print_dir();
         printf("\"cd\" detected, passing argument \"%s\"\n", arg[1]);
       }
 
-      if (chdir(arg[1]) == 0) {
-        DEB {
-          getcwd(directory, sizeof(directory));
-          printf("In directory %s\n", directory);
+      if(!arg[1]){
+        if(chdir(getenv("HOME")) == 0) {
+          DEB {
+            d_print_dir();
+          }
+        } else {
+          printf("Could not execute `cd %s`\n", getenv("HOME"));
+          continue;
         }
       } else {
-        printf("Could not execute `cd %s`\n", arg[1]);
+        arg[1] = home_eval(arg[1]);
+        if (chdir(arg[1]) == 0) {
+          DEB {
+            d_print_dir();
+          }
+        } else {
+          printf("Could not execute `cd %s`\n", arg[1]);
+        }
       }
       continue;
     }
@@ -129,7 +147,8 @@ int main(void) {
 
     pid_t pid = fork();
 
-    if (pid > 0) { /* host process */
+    /* host process **********************************************************/
+    if (pid > 0) {
       int return_code;
       /* waiting the child process to execute */
       waitpid(pid, &return_code, WUNTRACED);
@@ -140,11 +159,15 @@ int main(void) {
             pid, return_code);
       }
 
-    } else if (pid == 0) { /* hosted process */
+    }
+    /* hosted process ********************************************************/
+    else if (pid == 0) {
       execvp(arg[0], arg);
-      perror("Could not execute execvp()");
+      perror("P8-shell: command not found");
       exit(1);
-    } else { /* fork failed */
+    }
+    /* fork failed ***********************************************************/
+    else {
       fprintf(stderr, "Error, fork() failed, exiting...");
       exit(1);
     }
