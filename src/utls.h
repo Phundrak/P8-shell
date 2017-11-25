@@ -57,13 +57,30 @@ char **str_to_array(char *str, const char *sep);
  */
 bool is_exit(char *str);
 
+/**
+ *  \brief Checks if console input is the cd command
+ *
+ *  The fuction will return true if the string is identical to the C string
+ *  "cd", false otherwise.
+ *
+ *  \param str C string to check
+ *  \return bool
+ */
 bool is_cd(char *str);
 
 /*****************************************************************************/
 /*                             built-in functions                            */
 /*****************************************************************************/
 
-int cd(char* str);
+/**
+ *  \brief cd command
+ *
+ *  Will change the working directory to the one specified in the path argument
+ *
+ *  \param path Directory to change the working directory to
+ *  \return Returns 0 if succeeded, -1 otherwise
+ */
+int cd(char* path);
 
 /*****************************************************************************/
 /*                              debug functions                              */

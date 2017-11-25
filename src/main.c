@@ -47,8 +47,6 @@
 /*****************************************************************************/
 
 /* FIXME:
-   - When the execution fails, the shell requires typing `exit` twice to
-     actually exit
    - Cannot handle whitespaces in arguments yet (such as escaped whitespaces or
      strings between quotation marks)
    - Change tilde (`~`) in paths with home directory from environment "HOME"
@@ -75,10 +73,12 @@ int main(void) {
   int i;
   char *ln;
 
-  ln = getln();
-
   /* while "exit" has not been typed */
-  while (!is_exit(ln)) {
+  while (1) {
+    ln = getln();
+    if(is_exit(ln))
+      exit(0);
+
     DEB { print_debug(ln); }
 
     /* Changes the input string to an array of strings originally separated by a
@@ -99,7 +99,7 @@ int main(void) {
      * able to detect is as part of the path, even if escaped or if the path is
      * quoted.
      */
-    if(is_cd(arg[0])){
+    if (is_cd(arg[0])) {
 
       char directory[1024];
 
@@ -107,23 +107,19 @@ int main(void) {
       printf("In directory %s\n", directory);
 
       DEB {
+        getcwd(directory, sizeof(directory));
+        printf("In directory %s\n", directory);
         printf("\"cd\" detected, passing argument \"%s\"\n", arg[1]);
       }
 
-      if(chdir(arg[1]) == 0) {
-        getcwd(directory, sizeof(directory));
-        printf("In directory %s\n", directory);
+      if (chdir(arg[1]) == 0) {
+        DEB {
+          getcwd(directory, sizeof(directory));
+          printf("In directory %s\n", directory);
+        }
       } else {
         printf("Could not execute `cd %s`\n", arg[1]);
       }
-
-      /* if(!cd(arg[1])) { */
-      /*   printf("Could not execute `cd %s`\n", arg[1]); */
-      /* } else { */
-      /*   printf("Executed `cd %s`\n", arg[1]); */
-      /* } */
-
-      ln = getln();
       continue;
     }
 
@@ -147,12 +143,11 @@ int main(void) {
     } else if (pid == 0) { /* hosted process */
       execvp(arg[0], arg);
       perror("Could not execute execvp()");
+      exit(1);
     } else { /* fork failed */
       fprintf(stderr, "Error, fork() failed, exiting...");
       exit(1);
     }
-
-    ln = getln();
     /* execvp(arg[0], arg); */
   }
 

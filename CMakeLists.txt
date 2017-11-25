@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -6,7 +6,7 @@ project("P8-shell")
 
 set(TGT "P8-shell")
 set(${TGT}_VERSION_MAJOR 0)
-set(${TGT}_VERSION_MINOR 1)
+set(${TGT}_VERSION_MINOR 5)
 
 set(CC_COVERAGE_COMPILE_FLAGS "-pedantic -Wall -Wextra -Wold-style-cast -Woverloaded-virtual -Wfloat-equal -Wwrite-strings -Wpointer-arith -Wcast-qual -Wcast-align -Wconversion -Wshadow -Wredundant-decls -Wdouble-promotion -Winit-self -Wswitch-default -Wswitch-enum -Wundef -Winline")
 set(CMAKE_CC_FLAGS_DEBUG "${CC_COVERAGE_COMPILE_FLAGS} -g -pg")
