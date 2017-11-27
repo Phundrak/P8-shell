@@ -39,11 +39,10 @@
 /**
  *  \brief Reads line input
  *
- *  Reads from the console a whole line and returns it as a char* (C string).
- *  The string ends with a line break '\n' and is null-terminated. If memory
- *  could not be allocated for the returned string, NULL is then returned.
+ *  Reads from the console a whole line and returns it as a `char*` (C string).
+ *  The string ends with a line break `\n` and is null-terminated. If memory
+ *  could not be allocated for the returned string, `NULL` is then returned.
  *
- *  \param void
  *  \return char*
  */
 char *getln(void);
@@ -51,12 +50,12 @@ char *getln(void);
 /**
  *  \brief Converts a string to an array of string
  *
- *  The fuction split the received string STR into an array of string, each of
- *  them being originally separated by the character SEP. The function returns
- *  then an array of string of type char**
+ *  The fuction split the received string `str` into an array of string, each of
+ *  them being originally separated by the character `sep`. The function returns
+ *  then an array of string of type `char**`
  *
- *  \param str String to be split
- *  \param sep Separator
+ *  \param[in] str String to be split
+ *  \param[in] sep Separator
  *  \return char**
  */
 char **str_to_array(char *str, const char *sep);
@@ -71,7 +70,7 @@ char **str_to_array(char *str, const char *sep);
  *  The function will return true if the string is identical to the C string
  *  "exit", false otherwise.
  *
- *  \param str C string to check
+ *  \param[in] str C string to check
  *  \return bool
  */
 bool is_exit(char *str);
@@ -82,22 +81,34 @@ bool is_exit(char *str);
  *  The fuction will return true if the string is identical to the C string
  *  "cd", false otherwise.
  *
- *  \param str C string to check
+ *  \param[in] str C string to check
  *  \return bool
  */
 bool is_cd(char *str);
 
 /**
+ *  \brief Checks if two strings are identical
+ *
+ *  The function will return `true` if the two strings passed as arguments are
+ *  identical, `false` otherwise. The strings are not modified by the function.
+ *
+ *  \param[in] str1 First string to compare
+ *  \param[in] str2 Second string to compare
+ *  \return bool
+ */
+bool strcomp(char* str1, char* str2);
+
+/**
  *  \brief Evaluates the tilde in a path as the value of $HOME
  *
- *  Evaluates the tilde in the path passed as argument. The string passed as
+ *  Evaluates the tilde `~` in the path passed as argument. The string passed as
  *  argument will be modified in order replace the tilde to the value held in the
- *  environment's variable $HOME. This will work only if the tilde is at the
+ *  environment's variable `$HOME`. This will work only if the tilde is at the
  *  beginning of the string and is immediately followed by a slash or by the null
- *  character, i.e. this function won't do anything on strings such as "~me",
- *  "temp~/" or "file.c~"
+ *  character, i.e. this function won't do anything on strings such as `~me`,
+ *  `temp~/` or `file.c~`
  *
- *  \param str String in which the tilde has to be evaluated
+ *  \param[in] str String in which the tilde has to be evaluated
  *  \return void
  */
 char* home_eval(char *str);
@@ -109,12 +120,27 @@ char* home_eval(char *str);
 /**
  *  \brief cd command
  *
- *  Will change the working directory to the one specified in the path argument
+ *  Will change the working directory to the one specified in the `path`
+ *  argument
  *
- *  \param path Directory to change the working directory to
- *  \return Returns 0 if succeeded, -1 otherwise
+ *  \param[in] path Directory to change the working directory to
+ *  \return int
  */
 int cd(char* path);
+
+/**
+ *  \brief repeat (`!!`) command
+ *
+ *  This function recreates the behavior of the `!!` command, that is repeat the
+ *  last command passed by the user. If the command passed in `str` is `!!`,
+ *  then the last command (passed in `last`) will be repeated, and the function
+ *  will return `true`. Else, the function will return `false`.
+ *
+ *  \param[in] str Most recent input by the user
+ *  \param[in] last Last input by the user
+ *  \return bool
+ */
+bool repeat(char *str, char** last);
 
 /*****************************************************************************/
 /*                              debug functions                              */
@@ -127,7 +153,7 @@ int cd(char* path);
  *  character, as its hexadecimal value and as its decimal value. This function
  *  was made for debugging purposes and will not be included in release builds.
  *
- *  \param str String to be printed.
+ *  \param[in] str String to be printed.
  *  \return void
  */
 void print_debug(char*);

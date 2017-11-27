@@ -3,7 +3,7 @@
  *   \brief Main file of the P8-shell
  *
  *  This file contains the main function of the P8-shell. Also contains the
- *  FIXMEs and TODOs of the project.
+ *  FIXMEs and TODOs of the project, and occasionally debug functions.
  *
  */
 
@@ -56,6 +56,7 @@
    - Implement keyboard shortcuts such as C-c to stop current process, but not
      the console itself
    - Evaluation of arguments beginnig with a dollar sign such as $HOME
+   - Add the `!!` command
 */
 
 /*****************************************************************************/
@@ -82,37 +83,33 @@ void d_print_dir() {
 int main(void) {
   int i;
   char *ln;
+  char **arg;
 
-  /* while "exit" has not been typed */
+  /* while `exit` has not been typed */
   while (1) {
     ln = getln();
-    if(is_exit(ln))
-      exit(0);
-
     DEB { print_debug(ln); }
 
-    /* Changes the input string to an array of strings originally separated by a
+    /*
+     * Changes the input string to an array of strings originally separated by a
      * whitespace character
      */
-    char **arg = str_to_array(ln, " ");
+    arg = str_to_array(ln, " ");
     DEB {
       for (i = 0; arg[i]; ++i)
         printf("arg[%d] = %s\n", i, arg[i]);
     }
 
-    /*
-     * Testing first the built-in functions
-     */
+    if(strcomp(arg[0], "exit"))
+      exit(0);
 
-    /*
-     * As for now, if there is a whitespace in the path, the shell will not be
-     * able to detect is as part of the path, even if escaped or if the path is
-     * quoted.
-     */
+    /*************************************************************************/
+    /*                  Testing first the built-in functions                 */
+    /*************************************************************************/
 
     /* cd ********************************************************************/
 
-    if (is_cd(arg[0])) {
+    if(strcomp(arg[0], "cd")) {
 
       DEB {
         d_print_dir();
@@ -141,9 +138,9 @@ int main(void) {
       continue;
     }
 
-    /*
-     * Else will try to execute local or installed binaries
-     */
+    /*************************************************************************/
+    /*         Else, will try to execute local or installed binaries         */
+    /*************************************************************************/
 
     pid_t pid = fork();
 
