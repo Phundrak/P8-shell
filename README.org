@@ -1,5 +1,7 @@
 [[file:https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg]]
 
-This shell is a small university project for my second year in Computer Science. It is not intended to be a full-featured shell, just one that provides the most basic, and less, such as executing an executable (with a relative or absolute path) with arguments, and optionally be able to deal with pipes.
+This shell is my third semester assigment for my Operating Systems course at university. It is not intended to be a full-featured shell, just one that provides the most basic, and less, such as executing an executable (with a relative or absolute path) with arguments, and optionally be able to deal with pipes, background tasks and such.
 
-This source code is under the GPLv3 licence.
+“P8“ stands for “Paris 8”, the short name for “Université Paris 8 Vincennes-Saint-Denis”.
+
+This project is under the GPL-3.0 licence. More info [[https://github.com/Phundrak/P8-shell/blob/master/LICENCE][here]].
