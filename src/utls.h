@@ -43,7 +43,7 @@
  *  The string ends with a line break `\n` and is null-terminated. If memory
  *  could not be allocated for the returned string, `NULL` is then returned.
  *
- *  \return char*
+ *  \return Returns the line typed by the user
  */
 char *getln(void);
 
@@ -52,39 +52,18 @@ char *getln(void);
  *
  *  The fuction split the received string `str` into an array of string, each of
  *  them being originally separated by the character `sep`. The function returns
- *  then an array of string of type `char**`
+ *  then a NULL terminated array of C strings.
  *
  *  \param[in] str String to be split
  *  \param[in] sep Separator
- *  \return char**
+ *  \return Returns an array of strings, separated by `sep` in the original
+ *  string `str`
  */
 char **str_to_array(char *str, const char *sep);
 
 /*****************************************************************************/
 /*                         string analysis functions                         */
 /*****************************************************************************/
-
-/**
- *  \brief Checks if console input is the exit command
- *
- *  The function will return true if the string is identical to the C string
- *  "exit", false otherwise.
- *
- *  \param[in] str C string to check
- *  \return bool
- */
-bool is_exit(char *str);
-
-/**
- *  \brief Checks if console input is the cd command
- *
- *  The fuction will return true if the string is identical to the C string
- *  "cd", false otherwise.
- *
- *  \param[in] str C string to check
- *  \return bool
- */
-bool is_cd(char *str);
 
 /**
  *  \brief Checks if two strings are identical
@@ -94,7 +73,7 @@ bool is_cd(char *str);
  *
  *  \param[in] str1 First string to compare
  *  \param[in] str2 Second string to compare
- *  \return bool
+ *  \return Returns `true` if the strings are identical, `false` otherwise
  */
 bool strcomp(char* str1, char* str2);
 
@@ -109,9 +88,22 @@ bool strcomp(char* str1, char* str2);
  *  `temp~/` or `file.c~`
  *
  *  \param[in] str String in which the tilde has to be evaluated
- *  \return void
+ *  \return Returs the string with the `~` changed to the correct home folder
  */
 char* home_eval(char *str);
+
+/**
+ *  \brief Checks if the command his to be waited or not
+ *
+ *  This function receives the array of strings that are to be evaluated. If the
+ *  last element is a `&`, then the forked process will not be waited by the
+ *  parent process. The string "&" will also be set to `NULL` and the next
+ *  element will be freed.
+ *
+ *  \param str Array of character to be evaluated
+ *  \return Returns wether the new process should be waited
+ */
+bool to_background(char **str);
 
 /*****************************************************************************/
 /*                             built-in functions                            */

@@ -25,16 +25,14 @@
 
 /**
  *  \ref DEB acts as a switch to turn on and off debug features. The value 1
- *  turns them on, whilst the value 0 turns them off. With a decent compiler, the
- *  debug features should not even compile if the value of DEB is set to 0. The
- *  value is automatically set by the processor from the CMake values.
- *  If you wish to have a debug compilation, use the command\n
- *  `cmake -DCMAKE_BUILD_TYPE=Debug ..`\n
- *  in the `build` directory. This will compile the P8-Shell in the `debug`
- *  directory. Otherwise, use the\n
- *  `cmake -DCMAKE_BUILD_TYPE=Release ..`\n
- *  command in the `build` directory. This will compile the P8-Shell in the `bin`
- *  directory.
+ *  turns them on, whilst the value 0 turns them off. With a decent compiler,
+ * the debug features should not even compile if the value of DEB is set to 0.
+ * The value is automatically set by the processor from the CMake values. If
+ * you wish to have a debug compilation, use the command\n `cmake
+ * -DCMAKE_BUILD_TYPE=Debug ..`\n in the `build` directory. This will compile
+ * the P8-Shell in the `debug` directory. Otherwise, use the\n `cmake
+ * -DCMAKE_BUILD_TYPE=Release ..`\n command in the `build` directory. This will
+ * compile the P8-Shell in the `bin` directory.
  */
 #ifdef Debug
 #define DEB if (1)
@@ -53,8 +51,6 @@
 
 /* TODO:
    - Implement pipes
-   - Implement keyboard shortcuts such as C-c to stop current process, but not
-     the console itself
    - Evaluation of arguments beginnig with a dollar sign such as $HOME
    - Add the `!!` command
 */
@@ -64,16 +60,32 @@
 /*****************************************************************************/
 
 extern char **environ; /*!< External variable to the POSIX environment */
+pid_t pid = 0;         /*!< Global variable for the child process' PID */
 
 /**
  *  \brief Displays current directory, used for debug purposes
  *  \return void
  */
+void d_print_dir();
+
+void kill_child(int sig);
+
+/*****************************************************************************/
+/*                               IMPLEMENTATION                              */
+/*****************************************************************************/
+
 void d_print_dir() {
   char directory[1024];
 
   getcwd(directory, sizeof(directory));
   printf("In directory %s\n", getenv("HOME"));
+}
+
+void kill_child(int sig) {
+  if (pid != 0){
+    kill(pid, SIGKILL);
+    puts("\n");
+  }
 }
 
 /*****************************************************************************/
@@ -84,6 +96,9 @@ int main(void) {
   int i;
   char *ln;
   char **arg;
+
+  signal(SIGQUIT, SIG_IGN);
+  signal(SIGINT, kill_child);
 
   /* while `exit` has not been typed */
   while (1) {
@@ -100,7 +115,7 @@ int main(void) {
         printf("arg[%d] = %s\n", i, arg[i]);
     }
 
-    if(strcomp(arg[0], "exit"))
+    if (strcomp(arg[0], "exit"))
       exit(0);
 
     /*************************************************************************/
@@ -109,18 +124,16 @@ int main(void) {
 
     /* cd ********************************************************************/
 
-    if(strcomp(arg[0], "cd")) {
+    if (strcomp(arg[0], "cd")) {
 
       DEB {
         d_print_dir();
         printf("\"cd\" detected, passing argument \"%s\"\n", arg[1]);
       }
 
-      if(!arg[1]){
-        if(chdir(getenv("HOME")) == 0) {
-          DEB {
-            d_print_dir();
-          }
+      if (!arg[1]) {
+        if (chdir(getenv("HOME")) == 0) {
+          DEB { d_print_dir(); }
         } else {
           printf("Could not execute `cd %s`\n", getenv("HOME"));
           continue;
@@ -128,9 +141,7 @@ int main(void) {
       } else {
         arg[1] = home_eval(arg[1]);
         if (chdir(arg[1]) == 0) {
-          DEB {
-            d_print_dir();
-          }
+          DEB { d_print_dir(); }
         } else {
           printf("Could not execute `cd %s`\n", arg[1]);
         }
@@ -142,13 +153,15 @@ int main(void) {
     /*         Else, will try to execute local or installed binaries         */
     /*************************************************************************/
 
-    pid_t pid = fork();
+    pid = fork();
 
     /* host process **********************************************************/
     if (pid > 0) {
       int return_code;
-      /* waiting the child process to execute */
-      waitpid(pid, &return_code, WUNTRACED);
+      if (!to_background(arg)) /* waiting the child process to execute */
+        waitpid(pid, &return_code, 0);
+      else
+        return_code = 0;
 
       DEB {
         printf(
@@ -160,7 +173,7 @@ int main(void) {
     /* hosted process ********************************************************/
     else if (pid == 0) {
       execvp(arg[0], arg);
-      perror("P8-shell: command not found");
+      fprintf(stderr, "Error: command %s returned error code %d\n", arg[0], errno);
       exit(1);
     }
     /* fork failed ***********************************************************/
@@ -168,7 +181,7 @@ int main(void) {
       fprintf(stderr, "Error, fork() failed, exiting...");
       exit(1);
     }
-    /* execvp(arg[0], arg); */
+
   }
 
   return 0;

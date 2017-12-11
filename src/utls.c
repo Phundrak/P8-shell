@@ -119,34 +119,24 @@ char* home_eval(char *str) {
 /*                         string analysis functions                         */
 /*****************************************************************************/
 
-/* is_exit *******************************************************************/
-
-bool is_exit(char *str) {
-  int i;
-  char *exit = "exit";
-  for (i = 0; i < 5 && str[i]; ++i)
-    if (str[i] != exit[i])
-      return false;
-  return true;
-}
-
-/* is_cd *********************************************************************/
-
-bool is_cd(char* str) {
-  int i;
-  char *cd = "cd";
-  for(i = 0; i < 3 && str[i]; ++i)
-    if(str[i] != cd[i])
-      return false;
-  return true;
-}
-
 /* strcomp *******************************************************************/
 
 bool strcomp(char* str1, char* str2) {
   for(; *str1 && *str2 && *str1 == *str2; ++str1, ++str2)
     ;
   return *str1 == *str2;
+}
+
+/* to_background *************************************************************/
+bool to_background(char** str) {
+  int i;
+  for(i = 0; str[i]; i++)
+    ;
+  if(!strcomp(str[i-1], "&"))
+    return false;
+  free(str[i]);
+  str[i-1] = NULL;
+  return true;
 }
 
 /*****************************************************************************/
