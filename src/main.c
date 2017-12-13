@@ -47,11 +47,13 @@
 /* FIXME:
    - Cannot handle whitespaces in arguments yet (such as escaped whitespaces or
      strings between quotation marks)
+   - C-RET creates a segfault
+   - C-c when no process is launched stops the shell itself
 */
 
 /* TODO:
    - Implement pipes
-   - Evaluation of arguments beginnig with a dollar sign such as $HOME
+   - Creation and modification of environment variables
    - Add the `!!` command
 */
 
@@ -59,7 +61,6 @@
 /*                                DEFINITIONS                                */
 /*****************************************************************************/
 
-extern char **environ; /*!< External variable to the POSIX environment */
 pid_t pid = 0;         /*!< Global variable for the child process' PID */
 
 /**
@@ -94,8 +95,7 @@ void kill_child(int sig) {
 
 int main(void) {
   int i;
-  char *ln;
-  char **arg;
+  char *ln, **arg, ret_str[10];
 
   signal(SIGQUIT, SIG_IGN);
   signal(SIGINT, kill_child);
@@ -115,12 +115,25 @@ int main(void) {
         printf("arg[%d] = %s\n", i, arg[i]);
     }
 
-    if (strcomp(arg[0], "exit"))
-      exit(0);
+    /*
+     * Evaluates various environment variables if any
+     */
+    DEB { printf("\n"); }
+    for (i = 0; arg[i]; i++) {
+      if (arg[i][0] == '$') {
+        DEB { printf("arg[%d] = %s\n", i, arg[i]); }
+        arg[i] = getenv(arg[i] + 1);
+        DEB { printf("arg[%d] = %s\n", i, arg[i]); }
+      }
+    }
+    DEB { printf("\n"); }
 
     /*************************************************************************/
     /*                  Testing first the built-in functions                 */
     /*************************************************************************/
+
+    if (strcomp(arg[0], "exit"))
+      exit(0);
 
     /* cd ********************************************************************/
 
@@ -162,6 +175,10 @@ int main(void) {
         waitpid(pid, &return_code, 0);
       else
         return_code = 0;
+      if(return_code)
+        printf("Command \"%s\" returned with code %d\n", arg[0], return_code);
+      sprintf(ret_str, "%d", return_code);
+      setenv("?", ret_str, 1);
 
       DEB {
         printf(
@@ -174,7 +191,7 @@ int main(void) {
     else if (pid == 0) {
       execvp(arg[0], arg);
       fprintf(stderr, "Error: command %s returned error code %d\n", arg[0], errno);
-      exit(1);
+      exit(errno);
     }
     /* fork failed ***********************************************************/
     else {
