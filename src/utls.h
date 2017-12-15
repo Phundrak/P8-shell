@@ -37,6 +37,18 @@
 /*****************************************************************************/
 
 /**
+ *  \brief Gets the short name of the current directory
+ *  \return Returns a string containing the name of the current directory
+ */
+char *getCurrentDir(void);
+
+/**
+ *  \brief Get hostname
+ *  \return Returns a C string containing the hostname of the machine
+ */
+char *gethost(void);
+
+/**
  *  \brief Reads line input
  *
  *  Reads from the console a whole line and returns it as a `char*` (C string).

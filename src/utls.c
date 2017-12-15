@@ -7,6 +7,7 @@
  */
 
 #include "utls.h"
+#include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +17,57 @@
 /*                        string manipulation function                       */
 /*****************************************************************************/
 
+/* getCurrentDir *************************************************************/
+
+char *getCurrentDir(void) {
+  char *currWorkDir, *token;
+  char buffer[PATH_MAX + 1];
+  char *directory;
+  size_t length;
+
+  currWorkDir = getcwd(buffer, PATH_MAX + 1);
+
+  if (strcomp(currWorkDir, getenv("HOME")))
+    return "~";
+
+  token = strrchr(currWorkDir, '/');
+
+  if (currWorkDir == NULL) {
+    printf("Error getting current directory's name");
+    exit(10);
+  }
+
+  if (token == NULL) {
+    printf("Error getting current directory's name");
+    exit(11);
+  }
+
+  length = strlen(token);
+  directory = malloc(length);
+  memcpy(directory, token + 1, length);
+
+
+
+  return directory;
+}
+
+/* gethost *******************************************************************/
+
+char* gethost() {
+  char *hostname;
+  int ret;
+
+  hostname = (char*)malloc((PATH_MAX + 1) * sizeof(char));
+
+  ret = gethostname(hostname, PATH_MAX + 1);
+  if(ret) {
+    printf("Error while getting hostname.\n");
+    exit(12);
+  }
+
+  return hostname;
+}
+
 /* getln *********************************************************************/
 
 char *getln(void) {
@@ -23,7 +75,7 @@ char *getln(void) {
   size_t lenmax, len;
   int c;
 
-  printf("$ ");
+  printf("[%s@%s %s]$ ", getenv("USER"), gethost(), getCurrentDir());''
 
   line = (char *)malloc(1024 * sizeof(char));
   linep = line;
