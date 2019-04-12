@@ -75,7 +75,7 @@ char *getln(void) {
   size_t lenmax, len;
   int c;
 
-  printf("[%s@%s %s]$ ", getenv("USER"), gethost(), getCurrentDir());''
+  printf("[%s@%s %s]$ ", getenv("USER"), gethost(), getCurrentDir());
 
   line = (char *)malloc(1024 * sizeof(char));
   linep = line;
